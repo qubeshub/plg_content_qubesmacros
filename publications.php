@@ -117,34 +117,13 @@ class Publications extends Macro
 		\Document::addStyleSheet($base . DS . 'assets' . DS . 'publications' . DS . 'css' . DS . 'colorbrewer.css');
 		\Document::addScript($base . DS . 'assets' . DS . 'publications' . DS . 'js' . DS . 'pubcards.js');
 
-		function sass_darken($hex, $percent) {
-			preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i', $hex, $primary_colors);
-			str_replace('%', '', $percent);
-			$color = "#";
-			for($i = 1; $i <= 3; $i++) {
-				$primary_colors[$i] = hexdec($primary_colors[$i]);
-				$primary_colors[$i] = round($primary_colors[$i] * (100-($percent*2))/100);
-				$color .= str_pad(dechex($primary_colors[$i]), 2, '0', STR_PAD_LEFT);
-			}
-			return $color;
-		}
-
-		// Calculating Color Contrast, by Brian Suda:  https://24ways.org/2010/calculating-color-contrast/
-		function getContrastYIQ($hexcolor){
-			$r = hexdec(substr($hexcolor,0,2))/1000;
-			$g = hexdec(substr($hexcolor,2,2))/1000;
-			$b = hexdec(substr($hexcolor,4,2))/1000;
-			$yiq = 1 - (($r*299)+($g*587)+($b*114))/255;
-			return ($yiq < 0.5) ? 'black' : 'white';
-		}
-
 		$html = '<style>';
 		$html .= '  .ribbon-alt {';
 		$html .= '    background-color: #' . $sponsorbgcol . ';';
-		$html .= '    color: ' . getContrastYIQ($sponsorbgcol) . ';';
+		$html .= '    color: ' . $this->getContrastYIQ($sponsorbgcol) . ';';
 		$html .= '  }';
 		$html .= '  .ribbon-alt:before {';
-		$html .= '    border-color: transparent ' . sass_darken($sponsorbgcol, 20) . ' transparent transparent;';
+		$html .= '    border-color: transparent ' . $this->sass_darken($sponsorbgcol, 20) . ' transparent transparent;';
 		$html .= '  }';
 		$html .= '</style>';
 
@@ -600,5 +579,40 @@ class Publications extends Macro
 		}
 
 		return false;
+	}
+
+	// HELPER FUNCTIONS
+
+	/**
+	 * PHP SASS darken emulator
+	 *
+	 * @param  	$hex	Color (string; hexidecimal)
+	 * @param		$percent	Percent to darken by (0-50)
+	 * @return 	string
+	 */
+	private function sass_darken($hex, $percent) {
+		preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i', $hex, $primary_colors);
+		str_replace('%', '', $percent);
+		$color = "#";
+		for($i = 1; $i <= 3; $i++) {
+			$primary_colors[$i] = hexdec($primary_colors[$i]);
+			$primary_colors[$i] = round($primary_colors[$i] * (100-($percent*2))/100);
+			$color .= str_pad(dechex($primary_colors[$i]), 2, '0', STR_PAD_LEFT);
+		}
+		return $color;
+	}
+
+	/**
+	 * Calculating Color Contrast, by Brian Suda:  https://24ways.org/2010/calculating-color-contrast/
+	 *
+	 * @param 	$hexcolor	Color (string; hexidecimal)
+	 * @return 	string
+	 */
+	function getContrastYIQ($hexcolor){
+		$r = hexdec(substr($hexcolor,0,2))/1000;
+		$g = hexdec(substr($hexcolor,2,2))/1000;
+		$b = hexdec(substr($hexcolor,4,2))/1000;
+		$yiq = 1 - (($r*299)+($g*587)+($b*114))/255;
+		return ($yiq < 0.5) ? 'black' : 'white';
 	}
 }
