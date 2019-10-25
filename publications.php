@@ -94,6 +94,8 @@ class Publications extends Macro
 
 	public function render()
 	{
+		include_once \Component::path('com_publications') . DS . 'models' . DS . 'publication.php';
+
 		// Get args
 	  $args = $this->getArgs();
 
@@ -124,11 +126,6 @@ class Publications extends Macro
 		} else {
 			return $this->_getListView();
 		}
-
-		// 2.2 should take care of not needed to import?  i.e. the "use" command above should handle this
-		include_once \Component::path('com_publications') . DS . 'models' . DS . 'publication.php';
-
-		// Get publications
 	}
 
 	public function _getCardView() {
