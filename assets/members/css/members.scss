@@ -1,82 +1,71 @@
-// Colors
-$matterhorn: #2b2b2b;
-$mine-shaft: #393c3d;
-$sap-green: #597f2f;
-$android-green: #8cc540;
-$forest-green: #248232;
-$midnight: #222b37;
-$white-smoke: #f1f1f1;
-$sea-blue: #008099;
-$fushsia: #cb48b7;
-$purple-navy: #5f5980;
-$silver: #c1c1c1;
-$black: #000;
-$white: #fff;
+@import '../../../../../../templates/bmc/css/pages/mixins';
 
-// Common Elements
-$color-text-body: $matterhorn;
-$color-text-dark: $mine-shaft;
-$color-link: $sap-green;
-$color-link-hover: $sea-blue;
-
-$color-accent: $android-green;
-$color-accent2: $forest-green;
-
-// Fonts
-$font-link: 'montserratregular',
-Helvetica Neue,
-Helvetica,
-sans-serif;
-$font-body: 'open_sansregular',
-Helvetica Neue,
-Helvetica,
-sans-serif;
+.member_browser {
+    @include flexbox(wrap);
+}
 
 .member-card {
-    border: 1px solid $mine-shaft;
+    border-radius: 2px;
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
     height: 21.875rem;
+    margin: .75em;
     padding: .5em;
+    position: relative;
     width: 15.625rem;
 }
 
 .member-card-upper {
-    display: flex;
+    @include flexbox(wrap);
 }
 
 .member-img {
-    width: 70%;
+    margin-bottom: 1em;
+    width: 60%;
 
     img {
         border-radius: 50%;
-        height: 5.1875em;
-        width: 5.1875em;
-    }
-
-    h2 {
-        font-size: 1.2rem;
-        margin: .5em 0 0;
-        width: 9.0625rem;
-    }
-
-    p {
-        font-size: .8rem;
-        line-height: 1;
-        margin: 0;
-        width: 9.0625rem;
+        height: 6.1875em;
+        width: 6.1875em;
     }
 }
 
+.member-badges {
+    width: 40%;
+}
+
+.member-name {
+    width: 100%;
+
+    h2 {
+        @include truncate(1.2rem, 1.2, 2);
+        height: auto;
+        margin: 0 .5em .25em;
+    }
+
+    p {
+        @include truncate(.8rem, 1, 2);
+        margin: 0 .5em;
+    }
+}
+
+.member-card-lower {
+    bottom: .5em;
+    left: 0;
+    position: absolute;
+}
+
 .member-bio {
-    font-size: .9rem;
-    line-height: 1.1;
-    margin: 0;
-    padding: .5em;
+    @include truncate(1rem, 1.2, 3);
+    margin: .5em 1.25em 1em;
     text-align: center;
+
+    p {
+        margin: 0;
+    }
 }
 
 .member-links {
     display: flex;
-    margin-top: .5em;
 }
 
 .member-profile,
@@ -89,6 +78,7 @@ sans-serif;
     width: 50%;
 
     img {
+        filter: invert(46%) sepia(2%) saturate(0%) hue-rotate(237deg) brightness(103%) contrast(87%);
         height: 25px;
         width: 25px;
     }

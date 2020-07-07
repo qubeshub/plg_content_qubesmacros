@@ -248,23 +248,30 @@ class MembersCards extends GroupMacro
 				$html .=        '<div class="member-card-upper">';
 				$html .=            '<div class="member-img">';
 				$html .=                '<img src="' . $profile->picture(0, false) . '" alt="' . stripslashes($profile->get('name')) . '">';
-				$html .=                '<h2>' . $profile->get('name') . '</h2>';
-				$html .=                '<p>' . $profile->get('organization') . '</p>';
 				$html .=            '</div>';
 				$html .=            '<div class="member-badges">';
 				$html .=            '</div>';
+				$html .=			'<div class="member-name">';
+				$html .=                '<h2><a href="' . Route::url($profile->link()) . '">' . $profile->get('name') . '</a></h2>';
+				$html .=                '<p>' . $profile->get('organization') . '</p>';
+				$html .=			'</div>';
 				$html .=        '</div>';
 				$html .=        '<div class="member-card-lower">';
-				$html .=            '<p class="member-bio">' . $profile->get('bio') . '</p>';
+				$html .=            '<div class="member-bio">' . $profile->get('bio') . '</div>';
 				$html .=            '<div class="member-links">';
 				$html .=                '<a href="' . Route::url($profile->link()) . '" class="member-profile">';
-				$html .=                    '<img src="core/assets/icons/user.svg" alt="Profile">';
+				$html .=                    '<img src="core/assets/icons/user.svg" alt="' . stripslashes($profile->get('name')) . '&#39;s Profile" aria-hidden="true">';
 				$html .=                    'Profile';
 				$html .=                '</a>';
+
+							//Check if user has a website
+								if ($profile->get('url') !== null)
+								{
 				$html .=                '<a href="' . $profile->get('url') . '" class="member-website">';
-				$html .=                    '<img src="core/assets/icons/earth.svg" alt="Website">';
+				$html .=                    '<img src="core/assets/icons/earth.svg" alt="' . stripslashes($profile->get('name')) . '&#39;s Website" aria-hidden="true">';
 				$html .=                    'Website';
 				$html .=                '</a>';
+								}
 				$html .=            '</div>';
 				$html .=        '</div>';
 				$html .=    '</div>';
