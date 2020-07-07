@@ -14,7 +14,7 @@ use Plugins\Content\Formathtml\Macros\GroupMacro;
 /**
  * Group events Macro
  */
-class MembersPlus extends GroupMacro
+class MembersCards extends GroupMacro
 {
 	/**
 	 * Allow macro in partial parsing?
@@ -34,9 +34,9 @@ class MembersPlus extends GroupMacro
         $txt['html']  = '<p>Displays business cards of members.</p>';
         $txt['html'] .= '<p>Examples:</p>
 							<ul>
-                                <li><code>[[Group.MembersPlus()]]</code> - Shows all group members.</li>
-                                <li><code>[[Group.MembersPlus(role=role1;role2)]]</code> - Shows all members from the group with roles "role1" or "role2".</li>
-                                <li><code>[[Group.MembersPlus(id=2;1;3)</code> - Shows group members with ids 2, 1, and 3.</li>
+                                <li><code>[[Group.MembersCards()]]</code> - Shows all group members.</li>
+                                <li><code>[[Group.MembersCards(role=role1;role2)]]</code> - Shows all members from the group with roles "role1" or "role2".</li>
+                                <li><code>[[Group.MembersCards(id=2;1;3)</code> - Shows group members with ids 2, 1, and 3.</li>
 							</ul>';
         return $txt['html'];
     }
@@ -136,6 +136,8 @@ class MembersPlus extends GroupMacro
 	
 	/**
 	 * Search group roles
+	 * 
+	 * Borrowed from User/Group/Helper::search_roles due to bug
 	 *
 	 * @param   object  $group
 	 * @param   string  $role
