@@ -1,0 +1,62 @@
+.member-card {
+  border: 1px solid #393c3d;
+  height: 21.875rem;
+  padding: .5em;
+  width: 15.625rem;
+}
+
+.member-card-upper {
+  display: flex;
+}
+
+.member-img {
+  width: 70%;
+}
+
+.member-img img {
+  border-radius: 50%;
+  height: 5.1875em;
+  width: 5.1875em;
+}
+
+.member-img h2 {
+  font-size: 1.2rem;
+  margin: .5em 0 0;
+  width: 9.0625rem;
+}
+
+.member-img p {
+  font-size: .8rem;
+  line-height: 1;
+  margin: 0;
+  width: 9.0625rem;
+}
+
+.member-bio {
+  font-size: .9rem;
+  line-height: 1.1;
+  margin: 0;
+  padding: .5em;
+  text-align: center;
+}
+
+.member-links {
+  display: flex;
+  margin-top: .5em;
+}
+
+.member-profile,
+.member-website {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-size: .8rem;
+  justify-content: center;
+  width: 50%;
+}
+
+.member-profile img,
+.member-website img {
+  height: 25px;
+  width: 25px;
+}
