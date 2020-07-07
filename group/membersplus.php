@@ -125,7 +125,7 @@ class MembersPlus extends GroupMacro
 		{
 			if (preg_match('/role=([\w;]*)/', $arg, $matches))
 			{
-				$role = implode(',', array_map(array($this->_db, 'quote'), explode(';', (isset($matches[1])) ? $matches[1] : '')));
+				$role = explode(';', (isset($matches[1])) ? $matches[1] : '');
 				unset($args[$k]);
 				return $role;
 			}
@@ -134,6 +134,36 @@ class MembersPlus extends GroupMacro
 		return false;
 	}
 	
+	/**
+	 * Search group roles
+	 *
+	 * @param   object  $group
+	 * @param   string  $role
+	 * @return  array
+	 */
+	public static function search_roles($group, $role = '')
+	{
+		if ($role == '')
+		{
+			return false;
+		}
+
+		$db =  \App::get('db');
+
+		$query = "SELECT uidNumber FROM `#__xgroups_roles` as r, `#__xgroups_member_roles` as m WHERE r.name='" . $role . "' AND r.id=m.roleid AND r.gidNumber='" . $group->gidNumber . "'";
+
+		$db->setQuery($query);
+
+		$result = $db->loadColumn();
+
+		$result = array_intersect($result, $group->members);
+
+		if (count($result) > 0)
+		{
+			return $result;
+		}
+	}
+
 	/**
 	 * Get a list of events for a group
 	 *
@@ -162,13 +192,26 @@ class MembersPlus extends GroupMacro
 			$members = array_values(array_filter($members));
 		}
 
-		// Subset by id
-		if ($this->id) {
-			$members = array_intersect($members, $this->id);
+		// Subset by roles
+		if ($this->role) {
+			$members_with_roles = array_unique( // User could have multiple roles
+				call_user_func_array('array_merge',
+					array_map(function($role) use ($group) {
+						$ids = $this->search_roles($group, $role);
+						return ($ids ? $ids : array());
+					}, $this->role)
+				)
+			);
+			// System users have been filtered out so need to intersect
+			$members = array_intersect($members, $members_with_roles);
 		}
 
-		// Shuffle order
-		shuffle($members);
+		// Subset by id
+		if ($this->id) {
+			$members_with_ids = array_intersect($members, $this->id);
+			// If role specified too, need union, otherwise want subset
+			$members = ($this->role ? array_unique(array_merge($members, $members_with_ids)) : $members_with_ids);
+		}
 
 		// Limit members based on the filter
 		$members = array_slice($members, 0, $filters['limit']);
@@ -191,7 +234,9 @@ class MembersPlus extends GroupMacro
 		{
 			\Document::addStyleSheet($this->base . DS . '../assets' . DS . 'members' . DS . 'css' . DS . 'members.css');
 
-			$profiles = \Hubzero\User\User::all()
+			require_once Component::path('com_members') . DS . 'models' . DS . 'member.php';
+			$profiles = \Components\Members\Models\Member::all()
+				->including('profiles')
 				->whereIn('id', $members)
 				->rows();
 			
@@ -201,15 +246,14 @@ class MembersPlus extends GroupMacro
 				$html .=        '<div class="member-card-upper">';
 				$html .=            '<div class="member-img">';
 				$html .=                '<img src="' . $profile->picture(0, false) . '" alt="' . stripslashes($profile->get('name')) . '">';
-				$html .=                '<h2>Meowy McMeowster</h2>';
-				$html .=                '<p>Cattery Institution of Cat Stuff</p>';
+				$html .=                '<h2>' . $profile->get('name') . '</h2>';
+				$html .=                '<p>' . $profile->get('organization') . '</p>';
 				$html .=            '</div>';
 				$html .=            '<div class="member-badges">';
 				$html .=            '</div>';
 				$html .=        '</div>';
 				$html .=        '<div class="member-card-lower">';
-				$html .=            '<p class="member-bio">';
-				$html .=            '</p>';
+				$html .=            '<p class="member-bio">' . $profile->get('bio') . '</p>';
 				$html .=            '<div class="member-links">';
 				$html .=                '<a href="' . Route::url($profile->link()) . '" class="member-profile">';
 				$html .=                    '<img src="core/assets/icons/user.svg" alt="Profile">';
