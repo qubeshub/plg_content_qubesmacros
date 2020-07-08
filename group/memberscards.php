@@ -240,6 +240,7 @@ class MembersCards extends GroupMacro
 			$profiles = \Components\Members\Models\Member::all()
 				->including('profiles')
 				->whereIn('id', $members)
+				->order('surname', 'asc')
 				->rows();
 			
 			foreach ($profiles as $profile)
@@ -267,7 +268,7 @@ class MembersCards extends GroupMacro
 							//Check if user has a website
 								if ($profile->get('url') !== null)
 								{
-				$html .=                '<a href="' . $profile->get('url') . '" class="member-website">';
+				$html .=                '<a href="' . (!empty(parse_url($profile->get('url'))['scheme']) ? $profile->get('url') : 'http://' . ltrim($profile->get('url'), '/')) . '" class="member-website">';
 				$html .=                    '<img src="core/assets/icons/earth.svg" alt="' . stripslashes($profile->get('name')) . '&#39;s Website" aria-hidden="true">';
 				$html .=                    'Website';
 				$html .=                '</a>';
