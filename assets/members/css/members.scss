@@ -25,6 +25,7 @@
     img {
         border-radius: 50%;
         height: 6.1875em;
+        object-fit: cover;
         width: 6.1875em;
     }
 }
@@ -52,6 +53,7 @@
     bottom: .5em;
     left: 0;
     position: absolute;
+    width: 100%;
 }
 
 .member-bio {
