@@ -68,8 +68,10 @@ class Publications extends Macro
 								<li><code>[[Publications(limit=5, style=legacy)]]</code> - Show the 5 most recent publications using the legacy style.</li>
 								<li><code>[[Publications(sponsor=mygroup, sponsorbgcol=cb48b7)]]</code> - Display a sponsor ribbon with each publication, linking to Group "mygroup" (multiple sponsors are allowed if separated by a semicolon).  Background color of ribbon is given in hexidecimal without # (default is cb48b7).</li>
 								<li><code>[[Publications(group=mygroup1;mygroup2, project=myproject, id=2;6;8)]]</code> - Display all publications from Groups "mygroup1" and "mygroup2", Project "myproject", and Publications with ids 2, 6, and 8.</li>
+								<li><code>[[Publications(group=mygroup1;mygroup2, id_exclude=3;4)]]</code> - Display all publications from Groups "mygroup1" and "mygroup2", excluding Publications with ids 3 and 4.</li>
 								<li><code>[[Publications(group=mygroup, focusarea=myfa, fascheme=Dark2)]]</code> - Display all publications from Group "mygroup", using the children tags of the "myfa" tag as the primary categories.  Color scheme used is <a href="http://colorbrewer2.org/#type=qualitative&scheme=Dark2">Dark2 (default) from http://colorbrewer2.org</a>.</li>
 								<li><code>[[Publications(pubtype=qubesresource, tag=ecology;genetics)]]</code> - Display all QUBES publications that are tagged "ecology" <i>or</i> "genetics".</li>
+								<li><code>[[Publications(pubtype=qubesresource, tag=ecology*genetics)]]</code> - Display all QUBES publications that are tagged "ecology" <i>and</i> "genetics".  Users can include combinations of <i>or</i> (";") and <i>and</i> ("*"), with <i>and</i> taking precedence.</li>
 								<li><code>[[Publications(id=2;1;3, sortby=id, sortdir=none)]]</code> - Override the default sort by publish date and display publications in order given by id.</li>
 								<li><code>[[Publications(group=mygroup, sortby=date, sortdir=asc)]]</code> - Display publications in mygroup from oldest to newest (rather than default newest to oldest).</li>
 							</ul>';
