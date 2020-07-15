@@ -79,6 +79,9 @@
 .not-truncated {
     height: 16.5rem;
     overflow: scroll;
+     p {
+         margin: 1em 0;
+     }
 }
 
 .not-visible {
