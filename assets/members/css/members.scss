@@ -1,3 +1,4 @@
+@import '../../../../../../templates/bmc/css/pages/variables';
 @import '../../../../../../templates/bmc/css/pages/mixins';
 
 .member_browser {
@@ -50,24 +51,65 @@
 }
 
 .member-card-lower {
-    bottom: .5em;
+    background-color: $white;
+    bottom: 0;
     left: 0;
     position: absolute;
     width: 100%;
 }
 
 .member-bio {
-    @include truncate(1rem, 1.2, 3);
+    font-size: 1rem;
+    height: 3.6rem;
+    line-height: 1.2;
     margin: .5em 1.25em 1em;
-    text-align: center;
+    position: relative;
+    transition: .3s ease;
 
     p {
         margin: 0;
     }
 }
 
+.is-truncated {
+    @include truncate(1rem, 1.2, 3);
+    margin: .5em 1.25em 1em;
+}
+
+.not-truncated {
+    height: 16.5rem;
+    overflow: scroll;
+}
+
+.not-visible {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    white-space: nowrap;
+}
+
+.show-more {
+    bottom: 5rem;
+    border-radius: 50%;
+    height: 40px;
+    padding: 0;
+    position: absolute;
+    right: -1rem;
+    width: 40px;
+
+    &::before {
+        margin: 0;
+    }
+}
+
 .member-links {
     display: flex;
+    margin-bottom: .5em;
 }
 
 .member-profile,

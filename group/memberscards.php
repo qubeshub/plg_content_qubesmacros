@@ -235,6 +235,7 @@ class MembersCards extends GroupMacro
 		if (count($members) > 0)
 		{
 			\Document::addStyleSheet($this->base . DS . '../assets' . DS . 'members' . DS . 'css' . DS . 'members.css');
+			\Document::addScript($this->base . DS . '../assets' . DS . 'members' . DS . 'js' . DS . 'members.js');
 
 			require_once Component::path('com_members') . DS . 'models' . DS . 'member.php';
 			$profiles = \Components\Members\Models\Member::all()
@@ -258,7 +259,18 @@ class MembersCards extends GroupMacro
 				$html .=			'</div>';
 				$html .=        '</div>';
 				$html .=        '<div class="member-card-lower">';
+				
+				//Check if bio needs to be truncated
+				if (strlen($profile->get('bio')) > 75)
+				{
+				$html .=			'<button class="show-more icon-plus" aria-expanded="false">';
+				$html .=				'<span class=" not-visible">Extended ' . stripslashes($profile->get('name')) . '&#39;s bio</span></button>';
+				$html .=			'</button>';
+				$html .=            '<div class="member-bio is-truncated">' . $profile->get('bio') . '</div>';
+				} else {
 				$html .=            '<div class="member-bio">' . $profile->get('bio') . '</div>';
+				}
+				
 				$html .=            '<div class="member-links">';
 				$html .=                '<a href="' . Route::url($profile->link()) . '" class="member-profile">';
 				$html .=                    '<img src="core/assets/icons/user.svg" alt="' . stripslashes($profile->get('name')) . '&#39;s Profile" aria-hidden="true">';

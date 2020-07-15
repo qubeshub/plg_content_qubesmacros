@@ -80,13 +80,28 @@
 }
 
 .member-card-lower {
-  bottom: .5em;
+  background-color: #fff;
+  bottom: 0;
   left: 0;
   position: absolute;
   width: 100%;
 }
 
 .member-bio {
+  font-size: 1rem;
+  height: 3.6rem;
+  line-height: 1.2;
+  margin: .5em 1.25em 1em;
+  position: relative;
+  -webkit-transition: .3s ease;
+  transition: .3s ease;
+}
+
+.member-bio p {
+  margin: 0;
+}
+
+.is-truncated {
   display: block;
   /* Fallback for non-webkit */
   display: -webkit-box;
@@ -100,10 +115,36 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin: .5em 1.25em 1em;
-  text-align: center;
 }
 
-.member-bio p {
+.not-truncated {
+  height: 16.5rem;
+  overflow: scroll;
+}
+
+.not-visible {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+.show-more {
+  bottom: 5rem;
+  border-radius: 50%;
+  height: 40px;
+  padding: 0;
+  position: absolute;
+  right: -1rem;
+  width: 40px;
+}
+
+.show-more::before {
   margin: 0;
 }
 
@@ -111,6 +152,7 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  margin-bottom: .5em;
 }
 
 .member-profile,
