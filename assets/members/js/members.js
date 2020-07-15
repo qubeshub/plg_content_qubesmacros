@@ -8,6 +8,8 @@ $(document).ready(function () {
             return attr == 'true' ? 'false' : 'true';
         });
 
-        $(this).toggleClass('icon-plus').removeClass('icon-spinner').toggleClass('icon-minus');
+        $(this).toggleClass('icon-plus').toggleClass('icon-minus');
+
+        $bio.animate({ scrollTop: 0 }, 'fast');
     });
 });
