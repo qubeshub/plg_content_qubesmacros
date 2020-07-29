@@ -354,18 +354,18 @@ class Publications extends Macro
 				// $html .= '      </div>';
 
 				// Citation info
-	  		$html .= '	  <div class="title">';
+	  			$html .= '	  <div class="title">';
 
 				// Title
-	  		$html .= '      <h3>';
-	  		$html .= '        <a href="' . $pub->link() . '">' . $pub->get('title') . '</a>';
-	  		$html .= '      </h3>';
+	  			$html .= '      <h3>';
+	  			$html .= '        <a href="' . $pub->link() . '">' . $pub->get('title') . '</a>';
+	  			$html .= '      </h3>';
 
 				// Authors
 				$authors = implode(', ', array_map(function ($author) {return $author->name; }, $pub->authors()));
 				$html .= '      <p class="authors" title= "' . $authors . '">';
 				$html .= '        ' . $authors;
-	  		$html .= '      </p>';
+	  			$html .= '      </p>';
 
 				// Version info
 				$html .= '      <p class="hist">';
@@ -401,27 +401,32 @@ class Publications extends Macro
 				// Sub-menu
 				$html .= '    <div class="sub-menu">';
 				$html .= '      <a aria-label="Full Record" title= "Full Record" href="' . $pub->link() . '" aria-hidden="true" tabindex="-1">';
-		    $html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/arrow-right.svg") . '</span>';
-		    $html .= '        Full Record';
-		    $html .= '      </a>';
-		    $html .= '      <a aria-label="Download" title= "Download" href="' . $pub->link('serve') . '?render=archive" aria-hidden="true" tabindex="-1">';
-		    $html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/download-alt.svg") . '</span>';
-		    $html .= '      </a>';
+				$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/arrow-right.svg") . '</span>';
+				$html .= '        Full Record';
+				$html .= '      </a>';
+				$html .= '      <a aria-label="Download" title= "Download" href="' . $pub->link('serve') . '?render=archive" aria-hidden="true" tabindex="-1">';
+				$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/download-alt.svg") . '</span>';
+				$html .= '      </a>';
 
 				$url = $pub->link() . '/forks/' . $pub->version->get('version_number') . '?action=fork';
 				$html .= '      <a aria-label="Adapt" title= "Adapt" href="' . $url . '" aria-hidden="true" tabindex="-1">';
-		    $html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/code-fork.svg") . '</span>';
-		    $html .= '      </a>';
+				$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/code-fork.svg") . '</span>';
+				$html .= '      </a>';
+
+				$url = Route::url($pub->link('version') . '&active=comments#commentform');
+				$html .= '      <a aria-label="Comment" title= "Comment" href="' . $url . '" aria-hidden="true" tabindex="-1">';
+				$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/comments.svg") . '</span>';
+				$html .= '      </a>';				
 				if ($watching) {
-  		    $html .= '      <a aria-label="Watch" title= "Click to unsubscribe from this resource\'s notifications" href="' . \Route::url($pub->link()) . DS . 'watch' . DS . $pub->version->get('version_number') . '?confirm=1&action=unsubscribe" aria-hidden="true" tabindex="-1">';
-  		    $html .= '        <span class="menu-icon">' . file_get_contents("app/plugins/content/qubesmacros/assets/icons/feed-off.svg") . '</span>';
-  		    $html .= '      </a>';
+					$html .= '      <a aria-label="Watch" title= "Click to unsubscribe from this resource\'s notifications" href="' . \Route::url($pub->link()) . DS . 'watch' . DS . $pub->version->get('version_number') . '?confirm=1&action=unsubscribe" aria-hidden="true" tabindex="-1">';
+					$html .= '        <span class="menu-icon">' . file_get_contents("app/plugins/content/qubesmacros/assets/icons/feed-off.svg") . '</span>';
+					$html .= '      </a>';
 				} else {
 					$html .= '      <a aria-label="Watch" title= "Click to receive notifications when a new version is released" href="' . \Route::url($pub->link()) . DS . 'watch' . DS . $pub->version->get('version_number') . '?confirm=1&action=subscribe" aria-hidden="true" tabindex="-1">';
-  		    $html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/feed.svg") . '</span>';
-  		    $html .= '      </a>';
+					$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/feed.svg") . '</span>';
+					$html .= '      </a>';
 				}
-		    $html .= '    </div>'; // End sub-menu
+				$html .= '    </div>'; // End sub-menu
 				$html .= '    </div>'; // End content
 
 				// Sponsors
@@ -438,7 +443,7 @@ class Publications extends Macro
 				// More information button
 				$html .= '    <button aria-label="More Information" title="More Information" href="#" class="btn-action">';
 				$html .= '      <i class="menu"></i>';
-		    $html .= '    </button>';
+				$html .= '    </button>';
 
 				// Meta
 				$this->tags = $pub->getTags()->toArray();
@@ -446,7 +451,7 @@ class Publications extends Macro
 				$tagsTitle = implode(', ', $nonAdminTags);
 				$html .= '    <div class="meta">';
 				$html .= '      <div aria-label="Tags" title= "' . $tagsTitle . '" class="tag-wrap">';
-	      $html .= '        <span class="icons">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/tags.svg") . '</span>';
+				$html .= '        <span class="icons">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/tags.svg") . '</span>';
 				$html .= '        <span>';
 				if ($nonAdminTags) {
 					$html .= '          <span class="tags">' . implode(', </span><span class="tags">', $nonAdminTags);
@@ -483,7 +488,6 @@ class Publications extends Macro
 				$downloads = (int) $this->_db->loadResult();
 				$downloads = number_format_short($downloads);
 
-
 				$html .= '      <div class="downloads">';
 				$html .= '        <span aria-label="Downloads" title= "Downloads">';
 				$html .= '          <span class="icons">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/download-alt.svg") . '</span>';
@@ -508,13 +512,33 @@ class Publications extends Macro
 				$html .= '        </span>';
 				$html .= '      </div>'; // End adaptations
 
+				// Comments
+				// Borrowed from _countComments() in plugins/publications/comments/comments.php
+				$ncomm = \Plugins\Publications\Comments\Models\Comment::all()
+					->whereEquals('item_type', 'publications')
+					->whereEquals('item_id', $pub->version->id)
+					->whereIn('state', array(
+						\Plugins\Publications\Comments\Models\Comment::STATE_PUBLISHED,
+						\Plugins\Publications\Comments\Models\Comment::STATE_FLAGGED,
+						\Plugins\Publications\Comments\Models\Comment::STATE_DELETED
+					))
+					->whereIn('access', User::getAuthorisedViewLevels())
+					->count();
+				
+				$html .= '      <div class="comments">';
+				$html .= '        <span aria-label="Comments" title= "Comments">';
+				$html .= '          <span class="icons">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/comments.svg") . '</span>';
+				$html .= '          ' . $ncomm;
+				$html .= '        </span>';
+				$html .= '      </div>';
+
 				// Publish Date
 				$html .= '      <div class="date">';
-	      $html .= '        <span aria-label="Publish Date" title= "Publish Date">';
-	      $html .= '          <span class="icons">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/calendar-alt.svg") . '</span>';
-	      $html .= '         ' . Date::of($pub->version->get('published_up'))->toLocal('m.Y');
-	      $html .= '        </span>';
-	      $html .= '      </div>'; // End publish date
+				$html .= '        <span aria-label="Publish Date" title= "Publish Date">';
+				$html .= '          <span class="icons">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/calendar-alt.svg") . '</span>';
+				$html .= '         ' . Date::of($pub->version->get('published_up'))->toLocal('m.Y');
+				$html .= '        </span>';
+				$html .= '      </div>'; // End publish date
 
 				$html .= '    </div>'; // End meta
 
