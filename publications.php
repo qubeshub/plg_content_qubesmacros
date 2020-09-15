@@ -124,8 +124,11 @@ class Publications extends Macro
 		$this->base = rtrim(str_replace(PATH_ROOT, '', __DIR__));
 
 		$view = $this->_getView($args);
-    if($view =='card') {
-      return $this->_getCardView();
+		if (count($this->items) == 0) {
+			return('<div>No resources found.</div>');
+		}
+        if ($view =='card') {
+        	return $this->_getCardView();
 		} else {
 			return $this->_getListView();
 		}
@@ -795,9 +798,9 @@ class Publications extends Macro
 		}
 
 		if ($this->tags) {
-			$sql .= ' AND (V.id IN (SELECT objectid FROM (SELECT DISTINCT(objectid) FROM #__tags_object O WHERE O.tagid IN (SELECT T.id FROM #__tags T WHERE T.tag IN (' . implode(',', $this->tags) . ')) AND O.tbl="publications") as Z';
+			$sql .= ' AND (V.id IN (SELECT objectid FROM (SELECT DISTINCT(objectid) FROM #__tags_object O WHERE O.tagid IN (SELECT T.id FROM #__tags T WHERE T.tag IN (' . implode(',', $this->tags) . ') OR T.raw_tag IN (' . implode(',', $this->tags) . ')) AND O.tbl="publications") as Z';
 			if (count($this->tags > 1)) {
-				$sql .= ' WHERE ' . implode(' AND ', array_map(function($t) {return 'objectid IN (SELECT DISTINCT(objectid) FROM #__tags_object O WHERE O.tagid IN (SELECT T.id FROM #__tags T WHERE T.tag IN (' . $t . ')) AND O.tbl="publications")';}, $this->tags));
+				$sql .= ' WHERE ' . implode(' AND ', array_map(function($t) {return 'objectid IN (SELECT DISTINCT(objectid) FROM #__tags_object O WHERE O.tagid IN (SELECT T.id FROM #__tags T WHERE T.tag IN (' . $t . ') OR T.raw_tag IN (' . $t . ')) AND O.tbl="publications")';}, $this->tags));
 			}
 			$sql .= '))';
 		}
@@ -1070,10 +1073,10 @@ class Publications extends Macro
 	{
 		foreach ($args as $k => $arg)
 		{
-			if (preg_match('/tag=([\w;*]*)/', $arg, $matches))
+			if (preg_match('/tag=([\w;*\s]*)/', $arg, $matches))
 			{
 				$tags = array_map(function($str) {
-					return implode(',', array_map(array($this->_db, 'quote'), explode(';', $str)));
+					return implode(',', array_map(function($str2) { return $this->_db->quote(trim($str2)); }, explode(';', $str)));
 				}, explode('*', (isset($matches[1]) ? $matches[1] : '')));
 				unset($args[$k]);
 				return $tags;
