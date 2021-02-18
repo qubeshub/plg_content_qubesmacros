@@ -1,3 +1,9 @@
+/**
+ * @package    hubzero-cms
+ * @copyright  Copyright (c) 2005-2020 The Regents of the University of California.
+ * @license    http://opensource.org/licenses/MIT MIT
+ */
+
 /*
 The following two functions help set category tag text color based
 on background color set by user.  It is rather inelegant, as it will
