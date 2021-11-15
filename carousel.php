@@ -117,32 +117,23 @@ class Carousel extends Macro
 				if (is_file(PATH_APP . $base_url . DS . $slide))
 				{
 					$final_slides[] = 'app' . $base_url . DS . $slide;
-				}
-
-        //If a directory is taken as the input argument,it will get into the directory and render the images
-				else
-				{
+				} else {
+					//If a directory is taken as the input argument,it will get into the directory and render the images
 					$path =  'app' . $base_url . DS . $slide;
 					$imgpath = Filesystem::listContents($path, $filter = '.', $recursive = false, $full = false, $exclude = array('.svn', '.git', 'CVS', '.DS_Store', '__MACOSX'));
-				  foreach($imgpath as $img){
-
-						foreach($img as $key => $value){
-              if($key==='path'){
-                  //Used to check if it's an image file
-									if(preg_match("/\.(bmp|gif|jpg|jpe|jpeg|png)$/i",$value))
-									 {
-								     $imgaddr = $path . $value;
-                     $final_slides[] = $imgaddr;
-							     }
+					foreach($imgpath as $img) {
+						foreach($img as $key => $value) { 
+							if($key==='path'){
+								//Used to check if it's an image file
+								if(preg_match("/\.(bmp|gif|jpg|jpe|jpeg|png)$/i",$value)) {
+									$imgaddr = $path . $value;
+									$final_slides[] = $imgaddr;
 								}
 							}
 						}
-
+					}
 				}
-
-      }
-			else
-			{
+      		} else {
 				$headers = get_headers($slide);
 				if (strpos($headers[0], "OK") !== false)
 				{
@@ -151,15 +142,18 @@ class Carousel extends Macro
 			}
 		}
 
+		// if ($height === 'auto') {
+		// 	$height = array_reduce($final_slides, function($carry, $item) { return max(getimagesize($item)[1], $carry); });
+		// }
 		$html  = '';
 		$html .= '<div class="wiki_slider' . ($align ? ' ' . $align : '') . ($float ? ' ' . $float : '') . '">';
-			$html .= '<div id="slider_' . $id . '", style="height: ' . $height . ';width:' . $width . '">';
-			foreach ($final_slides as $fs)
-			{
-				$html .= '<img src="' . $fs . '" alt="" />';
-      }
-			$html .= '</div>';
-			$html .= '<div class="wiki_slider_pager" id="slider_' . $id . '_pager"></div>';
+		$html .= '<div id="slider_' . $id . '", style="height: ' . $height . ';width:' . $width . '">';
+		foreach ($final_slides as $fs)
+		{
+			$html .= '<img src="' . $fs . '" alt="" />';
+		}
+		$html .= '</div>';
+		$html .= '<div class="wiki_slider_pager" id="slider_' . $id . '_pager"></div>';
 		$html .= '</div>';
 
 		$base = rtrim(str_replace(PATH_ROOT, '', __DIR__));
@@ -169,13 +163,15 @@ class Carousel extends Macro
 		\Document::addScriptDeclaration('
 			var $jQ = jQuery.noConflict();
 
-			$jQ(function() {
+			$jQ(setTimeout(function() {
 				$jQ("#slider_' . $id . '").cycle({
 					fx: \'scrollHorz\',
 					timeout: ' . $timeout . ',
-					pager: \'#slider_' . $id . '_pager\'
+					pager: \'#slider_' . $id . '_pager\',
+					fit: 1,
+					containerResize: 1
 				});
-			});
+			}, 500));
 		');
 
 		return $html;
@@ -212,7 +208,7 @@ class Carousel extends Macro
 	}
 
 
-	private function _getHeight(&$args, $default = "100%")
+	private function _getHeight(&$args, $default = "auto")
 	{
 		foreach ($args as $k => $arg)
 		{
@@ -227,7 +223,7 @@ class Carousel extends Macro
 		return $default;
 	}
 
-	private function _getWidth(&$args, $default = "100%")
+	private function _getWidth(&$args, $default = "auto")
 	{
 		foreach ($args as $k => $arg)
 		{

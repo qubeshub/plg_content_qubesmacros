@@ -15,6 +15,7 @@
 	}
 .wiki_slider img {
 	max-width:100%;
+	display: none;
 	}
 .wiki_slider_pager {
 	position:absolute;
