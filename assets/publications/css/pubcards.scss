@@ -129,6 +129,10 @@
   position: absolute;
   top: .3125em;
   z-index: 4;
+
+  img {
+    max-width: none;
+  }
 }
 
 .logo {
@@ -302,9 +306,6 @@
 // a {
 //   border: none;
 // }
-img {
-  max-width: none;
-}
 .card-container {
   display: flex;
   flex-flow: row wrap;

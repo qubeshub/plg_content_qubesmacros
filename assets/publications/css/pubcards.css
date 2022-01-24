@@ -1,13 +1,22 @@
+@charset "UTF-8";
 /**
  * @package    hubzero-cms
  * @copyright  Copyright (c) 2005-2020 The Regents of the University of California.
  * @license    http://opensource.org/licenses/MIT MIT
  */
- 
 .icon-spinner {
-  -webkit-animation: spin-animation .2s infinite linear;
-  animation: spin-animation .2s infinite linear;
+  -webkit-animation: spin-animation 0.2s infinite linear;
+  animation: spin-animation 0.2s infinite linear;
   display: inline-block;
+}
+
+@-webkit-keyframes spin-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(359deg);
+  }
 }
 
 @keyframes spin-animation {
@@ -18,7 +27,6 @@
     transform: rotate(359deg);
   }
 }
-
 .card-container {
   display: flex;
   flex-wrap: wrap;
@@ -31,29 +39,26 @@
   background-position: center;
   background-size: cover;
   border: 1px solid #f1f1f1;
-  margin: .5em;
+  margin: 0.5em;
   position: relative;
 }
-
 .card .featured {
   position: absolute;
   top: -0.9375em;
   left: -0.5em;
   z-index: 5;
 }
-
 .card .featured span {
-  padding: .5em .75em;
+  padding: 0.5em 0.75em;
   display: block;
   position: relative;
   background-color: #248232;
   color: #fff;
-  font-size: .8rem;
+  font-size: 0.8rem;
   font-weight: bold;
 }
-
 .card .featured span::before {
-  content: '';
+  content: "";
   height: 0;
   width: 0;
   display: block;
@@ -63,7 +68,6 @@
   border-top: 10px solid #13461b;
   border-left: 10px solid transparent;
 }
-
 .card .meta {
   display: flex;
   flex-wrap: nowrap;
@@ -71,13 +75,12 @@
   font-size: 0.8125rem;
   justify-content: space-between;
   left: 0;
-  padding: 0 .5em;
+  padding: 0 0.5em;
   position: absolute;
-  transition: .2s;
+  transition: 0.2s;
   width: 100%;
   z-index: 99;
 }
-
 .card .abstract {
   display: block;
   /* Fallback for non-webkit */
@@ -91,47 +94,43 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin: 14em .5em .5em .5em;
+  margin: 14em 0.5em 0.5em 0.5em;
   position: absolute;
   top: 6.5rem;
-  transition: .4s;
+  transition: 0.4s;
 }
-
 .card.active .title {
   background-color: #fff;
   height: 100%;
 }
-
 .card.active .title h3 {
   height: 2.5rem;
   max-width: 85%;
 }
-
 .card.active .card-content {
   z-index: 80;
 }
-
 .card.active .featured-tag {
   bottom: 0;
 }
-
 .card.active .abstract {
-  margin-top: .5em;
+  margin-top: 0.5em;
 }
-
 .card.active .sub-menu {
   margin-top: 0;
 }
-
 .card.active .meta {
   background-color: #fff;
 }
 
 .logo-wrap {
-  left: .3125em;
+  left: 0.3125em;
   position: absolute;
-  top: .3125em;
+  top: 0.3125em;
   z-index: 4;
+}
+.logo-wrap img {
+  max-width: none;
 }
 
 .logo {
@@ -142,11 +141,10 @@
   height: 17.1875rem;
   overflow: hidden;
   position: relative;
-  transition: .4s;
+  transition: 0.4s;
   width: 19rem;
   z-index: 3;
 }
-
 @media only screen and (min-width: 31.25em) {
   .card-content {
     height: 17.1875rem;
@@ -160,11 +158,10 @@
   bottom: 0;
   height: 6.75rem;
   width: 100%;
-  padding: .3em .5em;
+  padding: 0.3em 0.5em;
   position: absolute;
-  transition: .4s;
+  transition: 0.4s;
 }
-
 .title .authors {
   display: block;
   /* Fallback for non-webkit */
@@ -179,7 +176,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .title h3 {
   display: block;
   /* Fallback for non-webkit */
@@ -194,9 +190,8 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin: inherit;
-  margin-bottom: .2em;
+  margin-bottom: 0.2em;
 }
-
 .title p {
   font-size: 0.75rem;
   line-height: 1;
@@ -207,12 +202,12 @@
   background-color: #008099;
   bottom: 6.75rem;
   color: #fff !important;
-  font-size: .8rem;
+  font-size: 0.8rem;
   height: auto;
   left: 0;
-  padding: .25em .5em;
+  padding: 0.25em 0.5em;
   position: absolute;
-  transition: .6s;
+  transition: 0.6s;
 }
 
 .hist {
@@ -234,7 +229,7 @@
 
 .icons {
   display: inline-block;
-  width: .75rem;
+  width: 0.75rem;
 }
 
 .menu-icon {
@@ -245,15 +240,15 @@
 
 .menu:before {
   color: #fff;
-  content: '\f039';
-  font-family: 'Fontcons';
+  content: "";
+  font-family: "Fontcons";
   font-style: normal;
 }
 
 .arrow-left:before {
   color: #fff;
-  content: '\2190';
-  font-family: 'Fontcons';
+  content: "←";
+  font-family: "Fontcons";
   font-style: normal;
 }
 
@@ -263,13 +258,11 @@
   white-space: nowrap;
   width: 7.6875rem;
 }
-
 @media only screen and (min-width: 31.25em) {
   .tag-wrap {
-    width: 9rem;
+    width: 8rem;
   }
 }
-
 .tag-wrap .tags {
   font-size: 0.75rem !important;
 }
@@ -282,17 +275,15 @@
   justify-content: flex-end;
   margin-top: 5em;
   position: absolute;
-  padding: .2em .5em .1em;
+  padding: 0.2em 0.5em 0.1em;
   top: 16em;
-  transition: .4s;
+  transition: 0.4s;
   width: 100%;
 }
-
 .sub-menu a {
   color: #fff;
   margin: 0 1em;
 }
-
 .sub-menu a:first-child {
   left: 0;
   position: absolute;
@@ -309,18 +300,13 @@
   right: 0.3125em;
   text-align: center;
   top: 0.3125em;
-  transition: .3s;
+  transition: 0.3s;
   width: 3.375rem;
   z-index: 100;
   padding: 0;
 }
-
 .btn-action:hover {
   border: 5px solid #fff;
-}
-
-img {
-  max-width: none;
 }
 
 .card-container {
@@ -335,7 +321,6 @@ img {
   height: 275px;
   overflow: hidden;
 }
-
 .thumbnail img {
   transition: all 0.3s linear 0s;
 }
@@ -344,7 +329,6 @@ img {
   font-size: 11px;
   z-index: 2;
 }
-
 .sponsor-logo img {
   height: 30px;
   padding: 5px;
@@ -356,7 +340,6 @@ img {
   left: 5px;
   color: #fff;
 }
-
 .heart-alt .fa {
   margin: 0 10px;
 }
@@ -375,31 +358,25 @@ img {
   left: 5px;
   font-size: 12px;
 }
-
 .meta-alt .heart {
   margin-right: 15px;
 }
-
 .meta-alt .icon-download {
   font-size: 18px !important;
   font-style: normal;
   margin: 0 5px;
 }
-
 .meta-alt .icon-download:before {
-  content: '\f019';
-  font-family: 'Fontcons';
+  content: "";
+  font-family: "Fontcons";
 }
-
 .meta-alt .downloads {
   margin-left: 10px;
   margin-right: 5px;
 }
-
 .meta-alt .comments {
   margin-left: 40px;
 }
-
 .meta-alt a > i {
   color: #666;
 }
@@ -409,31 +386,26 @@ img {
   top: 10px;
   right: 10px;
   color: #fff;
-  opacity: .6;
+  opacity: 0.6;
   z-index: 1;
 }
-
 .favorites-alt .fc {
   margin: 0 10px;
 }
-
 .favorites-alt .icon-watch {
   font-size: 18px !important;
   font-style: normal;
   margin: 0 5px;
 }
-
 .favorites-alt .icon-watch:before {
-  content: '\f06e';
-  font-family: 'Fontcons';
+  content: "";
+  font-family: "Fontcons";
 }
-
 .favorites-alt .icon-watch.watching:before {
   opacity: 1;
-  content: '\f070';
-  font-family: 'Fontcons';
+  content: "";
+  font-family: "Fontcons";
 }
-
 .favorites-alt a > i {
   color: #fff;
 }
@@ -461,10 +433,9 @@ img {
   padding: 0 5px 2px 5px;
   z-index: 3;
 }
-
 .ribbon-alt:before {
   position: absolute;
-  content: '';
+  content: "";
   width: 0;
   height: 0;
   border-style: solid;
@@ -474,14 +445,12 @@ img {
   bottom: -10px;
   z-index: 1;
 }
-
 .ribbon-alt img {
   display: inline-block;
   height: 25px;
   padding: 0 2px 0 2px;
   z-index: 2;
 }
-
 .ribbon-alt img:hover {
   transition: all 0.3s linear 0s;
   transform: scale(1.1);
@@ -493,7 +462,6 @@ img {
   right: 50%;
   height: 275px;
 }
-
 .resource-img img {
   position: relative;
   right: -50%;
@@ -507,7 +475,7 @@ img {
   margin-top: -275px;
   right: -50%;
   height: 220px;
-  content: '';
+  content: "";
 }
 
 .demo-two-card {
@@ -521,17 +489,14 @@ img {
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.15);
   transition: all 0.3s linear 0s;
 }
-
 .demo-two-card:hover {
   box-shadow: 0px 1px 35px 0px rgba(0, 0, 0, 0.3);
 }
-
 .demo-two-card:hover .resource-img img {
   transform: scale(1.1);
   transition: all 0.3s linear 0s;
   opacity: 0.6;
 }
-
 .demo-two-card .demo-two-content {
   position: absolute;
   min-height: 220px;
@@ -543,36 +508,29 @@ img {
   box-sizing: border-box;
   z-index: 10;
 }
-
 .demo-two-card .demo-two-content a {
   border: none;
 }
-
 .demo-two-card .demo-two-content .categories {
   position: absolute;
   top: -29px;
   left: 0;
 }
-
 .demo-two-card .demo-two-content .categories .cat {
   background-color: #a4d167;
   color: #fff;
   padding: 10px 15px;
 }
-
 .demo-two-card .demo-two-content .categories .primary {
   background-color: #8cc540;
   color: #fff;
 }
-
 .demo-two-card .demo-two-content .cat:hover {
   background-color: #71a131;
 }
-
 .demo-two-card .demo-two-content .demo-two-title {
-  padding-top: .5em;
+  padding-top: 0.5em;
 }
-
 .demo-two-card .demo-two-content .demo-two-title a {
   display: block;
   /* Fallback for non-webkit */
@@ -587,7 +545,6 @@ img {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
 .demo-two-card .demo-two-content .fork {
   display: block;
   /* Fallback for non-webkit */
@@ -605,17 +562,14 @@ img {
   margin: 10px 0;
   overflow-y: hidden;
 }
-
 .demo-two-card .demo-two-content .fork i.item-fork {
   font-style: normal;
   margin-right: 10px;
 }
-
 .demo-two-card .demo-two-content .fork i.item-fork:before {
-  content: '\f16b';
-  font-family: 'Fontcons';
+  content: "";
+  font-family: "Fontcons";
 }
-
 .demo-two-card .demo-two-content .author, .demo-two-card .demo-two-content .author-reveal {
   display: block;
   /* Fallback for non-webkit */
@@ -631,28 +585,24 @@ img {
   text-overflow: ellipsis;
   position: relative;
 }
-
 .demo-two-card .demo-two-content .author .italic, .demo-two-card .demo-two-content .author-reveal .italic {
   font-style: italic;
 }
-
 .demo-two-card .demo-two-content .author .more-info, .demo-two-card .demo-two-content .author-reveal .more-info {
   position: absolute;
   top: 0;
   right: 10px;
   background-color: #fff;
-  font-size: .9em;
+  font-size: 0.9em;
   font-style: italic;
   padding: 0 5px;
 }
-
 .demo-two-card .demo-two-content .description {
   display: none;
   height: 150px;
   padding: 10px 0;
   overflow: hidden;
 }
-
 .demo-two-card .demo-two-content .description .legacy-abstract {
   display: block;
   /* Fallback for non-webkit */
@@ -668,12 +618,10 @@ img {
   text-overflow: ellipsis;
   height: auto;
 }
-
 .demo-two-card .demo-two-content .description .resource-meta {
-  font-size: .7em;
+  font-size: 0.7em;
   padding: 5px 0 10px 0;
 }
-
 .demo-two-card .demo-two-content .description .secondary-tag {
   display: inline-block;
   font-size: 11px;
@@ -684,19 +632,17 @@ img {
   border: 1px solid #248232;
   overflow-x: inherit;
 }
-
 .demo-two-card .demo-two-content .description .secondary-tag:hover {
   background-color: #248232;
   color: #fff;
 }
-
 .demo-two-card .demo-two-content .description a.show-more {
   position: absolute;
   bottom: 0;
   right: 10px;
   background-color: #fff;
-  font-size: .9em;
+  font-size: 0.9em;
   font-style: italic;
   padding: 0 5px;
   display: none;
-}
+}/*# sourceMappingURL=pubcards.css.map */
