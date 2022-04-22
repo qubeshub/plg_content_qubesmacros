@@ -78,7 +78,15 @@
 }
 
 .is-truncated {
-    @include truncate(1rem, 1.2, 3);
+    // @include truncate(1rem, 1.2, 3);
+    height: 3.6rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    /* Fade out div: https://stackoverflow.com/questions/11837606/fading-out-text-at-bottom-of-a-section-with-transparent-div-but-height-stays-un */
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    overflow: hidden;
+    position: relative;
+    text-overflow: ellipsis;
     margin: .5em 1.25em 1em;
 }
 
@@ -134,5 +142,23 @@
         filter: invert(46%) sepia(2%) saturate(0%) hue-rotate(237deg) brightness(103%) contrast(87%);
         height: 25px;
         width: 25px;
+    }
+}
+
+.member-tags {
+    @include flexbox;
+    .tags {
+        margin: 0;
+
+        .tag {
+            font-size: .8rem;
+            padding: .15em .25em;
+        }
+    }
+
+    img {
+        filter: invert(46%) sepia(2%) saturate(0%) hue-rotate(237deg) brightness(103%) contrast(87%);
+        height: 15px;
+        width: 15px;
     }
 }

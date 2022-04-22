@@ -5,16 +5,18 @@
  * @license    http://opensource.org/licenses/MIT MIT
  */
 
-namespace Plugins\Content\Formathtml\Macros\Group;
+namespace Plugins\Content\Formathtml\Macros;
 
 require_once Plugin::path('content', 'formathtml') . DS . 'macros/group.php';
 
-use Plugins\Content\Formathtml\Macros\GroupMacro;
+use Plugins\Content\Formathtml\Macro;
+use Hubzero\User\Group;
 
 /**
- * Group events Macro
+* Members Macro Base Class 
+* Group events Macro
  */
-class MembersCards extends GroupMacro
+class MemberCards extends Macro
 {
 	/**
 	 * Allow macro in partial parsing?
@@ -31,16 +33,27 @@ class MembersCards extends GroupMacro
     public function description()
     {
         $txt = array();
-		$txt['html']  = '<p><strong>New version of macro exists. Please see <code>[[MemberCards()]]</code><strong> Note: this macro will still continue to work</p>';
         $txt['html']  = '<p>Displays business cards of members.</p>';
         $txt['html'] .= '<p>Examples:</p>
 							<ul>
-                                <li><code>[[Group.MembersCards()]]</code> - Shows all group members.</li>
-                                <li><code>[[Group.MembersCards(role=role1;role2)]]</code> - Shows all members from the group with roles "role1" or "role2".</li>
-                                <li><code>[[Group.MembersCards(id=2;1;3)</code> - Shows group members with ids 2, 1, and 3.</li>
+                                <li><code>[[MemberCards()]]</code> - Shows all group members.</li>
+								<li><code>[[MemberCards(group=anothergroup)]]</code> - Shows all group members from "anothergroup" <strong>Note: Macro can only specify one group at a time.</strong></li>
+                                <li><code>[[MemberCards(role=role1;role2)]]</code> - Shows all members from the group with roles "role1" or "role2".</li>
+                                <li><code>[[MemberCards(id=2;1;3)</code> - Shows group members with ids 2, 1, and 3.</li>
+								<li><code>[[MemberCards(tag=tag1;tag2)]]</code> - Shows group members with "tag1" OR "tag2" in their profiles</li>
 							</ul>';
         return $txt['html'];
     }
+
+	/**
+	 * Get macro args
+	 * @return array of arguments
+	 */
+	protected function getArgs()
+	{
+		//get the args passed in
+		return explode(',', $this->args);
+	}
 
 	/**
 	 * Generate macro output
@@ -49,18 +62,14 @@ class MembersCards extends GroupMacro
 	 */
 	public function render()
 	{
-		// Check if we can render
-		if (!parent::canRender())
-		{
-			return \Lang::txt('[This macro is designed for Groups only]');
-		}
-
 		// Get args
 		$args = $this->getArgs();
 
 		// Parse arguments
+		$this->group = $this->getGroup($args);
 		$this->id = $this->getId($args);
 		$this->role = $this->getRole($args);
+		$this->tags = $this->getTags($args);
 		$this->base = rtrim(str_replace(PATH_ROOT, '', __DIR__));
 
 		// Array of filters
@@ -93,7 +102,34 @@ class MembersCards extends GroupMacro
 		return $html;
 	}
 
-	    /**
+	/**
+	 * Get group
+	 * @param $args Macro Arguments
+	 * @return mixed
+	 */
+	private function getGroup(&$args)
+	{
+		foreach ($args as $k => $arg)
+		{
+			if (preg_match('/group=([\w;]*)/', $arg, $matches))
+			{
+				// Currently limiting groups to one
+				$group = trim(implode(',', array_map(array($this->_db, 'quote'), explode(';', (isset($matches[1])) ? $matches[1] : ''))), "'");
+				unset($args[$k]);
+				
+				// Return the group object
+				$group = Group::getInstance($group);
+				return $group;
+			}
+		}
+		
+		// If group not defined, default to current group macro is being called in
+		$cn = Request::getString('cn');
+		$default = Group::getInstance($cn);
+		return $default;
+	}
+
+	/**
 	 * Get id
 	 *
 	 * @param  	$args Macro Arguments
@@ -168,6 +204,65 @@ class MembersCards extends GroupMacro
 	}
 
 	/**
+	 * Get members by tag (uses OR for multiple tags)
+	 *
+	 * @param  	$args Macro Arguments
+	 * @return 	mixed
+	 */
+	private function getTags(&$args)
+	{
+		foreach ($args as $k => $arg)
+		{
+			if (preg_match('/tag=([\w;*\s]*)/', $arg, $matches))
+			{
+				$tags = explode(';', (isset($matches[1])) ? $matches[1] : '');
+				unset($args[$k]);
+				return $tags;
+			}
+		}
+
+		return false;
+	}
+
+
+
+	
+	/**
+	 * Search member tags
+	 * 
+	 * Borrowed from User/Group/Helper::search_roles due to bug
+	 *
+	 * @param   object  $group
+	 * @param   string  $tag
+	 * @return  array
+	 */
+	public static function search_tags($group, $tag = '')
+	{
+		if ($tag == '')
+		{
+			return false;
+		}
+
+		$db =  \App::get('db');
+
+		$query = "SELECT uidNumber
+			FROM `#__xgroups_members` as m
+			INNER JOIN `#__tags_object` as o ON o.taggerid = m.uidNumber
+			INNER JOIN `#__tags` as t ON t.id = o.tagid
+			WHERE t.raw_tag ='" . $tag . "' AND o.tbl = 'xprofiles' AND m.gidNumber ='" .  $group->gidNumber . "'";
+		$db->setQuery($query);
+
+		$result = $db->loadColumn();
+
+		$result = array_intersect($result, $group->members);
+
+		if (count($result) > 0)
+		{
+			return $result;
+		}
+	}
+
+	/**
 	 * Get a list of events for a group
 	 *
 	 * @param      object $group
@@ -209,11 +304,27 @@ class MembersCards extends GroupMacro
 			$members = array_intersect($members, $members_with_roles);
 		}
 
+		// Subset by tags
+		if ($this->tags) {
+			$members_with_tags = array_unique( // User could have multiple tags
+				call_user_func_array('array_merge',
+					array_map(function($tags) use ($group) {
+						$ids = $this->search_tags($group, $tags);
+						return ($ids ? $ids : array());
+					}, $this->tags)
+				)
+			);
+			// System users have been filtered out so need to intersect
+			$members = array_intersect($members, $members_with_tags);
+		}
+
 		// Subset by id
 		if ($this->id) {
 			$members_with_ids = array_intersect($members, $this->id);
 			// If role specified too, need union, otherwise want subset
 			$members = ($this->role ? array_unique(array_merge($members, $members_with_ids)) : $members_with_ids);
+			// If tags specified too, need union, otherwise want subset - not sure if needed
+			$members = ($this->tags ? array_unique(array_merge($members, $members_with_ids)) : $members_with_ids);
 		}
 
 		// Limit members based on the filter
@@ -235,8 +346,8 @@ class MembersCards extends GroupMacro
 		$html = '<div class="member_browser">';
 		if (count($members) > 0)
 		{
-			\Document::addStyleSheet($this->base . DS . '../assets' . DS . 'members' . DS . 'css' . DS . 'members.css');
-			\Document::addScript($this->base . DS . '../assets' . DS . 'members' . DS . 'js' . DS . 'members.js');
+			\Document::addStyleSheet($this->base . DS . 'assets' . DS . 'members' . DS . 'css' . DS . 'members.css');
+			\Document::addScript($this->base . DS . 'assets' . DS . 'members' . DS . 'js' . DS . 'members.js');
 
 			require_once Component::path('com_members') . DS . 'models' . DS . 'member.php';
 			$profiles = \Components\Members\Models\Member::all()
@@ -262,14 +373,23 @@ class MembersCards extends GroupMacro
 				$html .=        '<div class="member-card-lower">';
 				
 				//Check if bio needs to be truncated
-				if (strlen($profile->get('bio')) > 75)
+				if (strlen($profile->get('bio')) > 75 || !empty($profile->get('tags')))
 				{
 				$html .=			'<button class="show-more icon-plus" aria-expanded="false">';
 				$html .=				'<span class=" not-visible">Extended ' . stripslashes($profile->get('name')) . '&#39;s bio</span></button>';
 				$html .=			'</button>';
-				$html .=            '<div class="member-bio is-truncated">' . $profile->get('bio') . '</div>';
+				$html .=            '<div class="member-bio is-truncated">' . $profile->get('bio');
+				//Check if user has tags
+				if ($profile->get('tags') !== null)
+				{
+				$html .= 				'<div class="member-tags">';
+				$html .=					'<img src="/core/assets/icons/tags.svg" aria-label="' . stripslashes($profile->get('name')) . '&#39;s' . '" tags">';
+				$html .= 					$profile->get('tags');
+				$html .=				'</div>';
+				}
+				$html .=			'</div>';
 				} else {
-				$html .=            '<div class="member-bio">' . $profile->get('bio') . '</div>';
+				$html .=            '<div class="member-bio">' . $profile->get('bio') . '</div>'; 
 				}
 				
 				$html .=            '<div class="member-links">';
@@ -278,9 +398,9 @@ class MembersCards extends GroupMacro
 				$html .=                    'Profile';
 				$html .=                '</a>';
 
-							//Check if user has a website
-								if ($profile->get('url') !== null)
-								{
+				//Check if user has a website
+					if ($profile->get('url') !== null)
+					{
 				$html .=                '<a href="' . (!empty(parse_url($profile->get('url'))['scheme']) ? $profile->get('url') : 'http://' . ltrim($profile->get('url'), '/')) . '" class="member-website">';
 				$html .=                    '<img src="core/assets/icons/earth.svg" alt="' . stripslashes($profile->get('name')) . '&#39;s Website" aria-hidden="true">';
 				$html .=                    'Website';
