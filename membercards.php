@@ -247,7 +247,7 @@ class MemberCards extends Macro
 
 		$query = "SELECT uidNumber
 			FROM `#__xgroups_members` as m
-			INNER JOIN `#__tags_object` as o ON o.taggerid = m.uidNumber
+			INNER JOIN `#__tags_object` as o ON o.objectid = m.uidNumber
 			INNER JOIN `#__tags` as t ON t.id = o.tagid
 			WHERE t.raw_tag ='" . $tag . "' AND o.tbl = 'xprofiles' AND m.gidNumber ='" .  $group->gidNumber . "'";
 		$db->setQuery($query);
