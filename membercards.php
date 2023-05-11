@@ -73,12 +73,30 @@ class MemberCards extends Macro
 		$this->base = rtrim(str_replace(PATH_ROOT, '', __DIR__));
 
 		// Array of filters
-		$filters = array(
-			'limit' => (count($args) == 1 && is_numeric($args[0])) ? $args[0] : 12
-		);
+		// $filters = array(
+		// 	'limit' => (count($args) == 1 && is_numeric($args[0])) ? $args[0] : 1000
+		// );
+
+		// print_r($this->args);
+		// echo '<br>';
+		// print_r($this->getArgs());
+		// echo '<br>';
+		// print_r($args);
+		// echo '<br>';
+		// echo count($this->getArgs());
+		// echo '<br>';
+		// echo count($args);
+		// echo '<br>';
+		// echo (is_numeric($this->args[0]));
+		// echo '<br>';
+		// echo var_dump($args);
+		// echo '<br>';
+		// print_r($filters);
+		// die;
 
 		// Get members
-		$members = $this->getGroupMembers($this->group, $filters);
+		// $members = $this->getGroupMembers($this->group, $filters);
+		$members = $this->getGroupMembers($this->group);
 
 		// Are we a group member
 		$isMember = (in_array(\User::get('id'), $this->group->get('members'))) ? true : false;
@@ -268,7 +286,7 @@ class MemberCards extends Macro
 	 * @param      object $group
 	 * @return     array
 	 */
-	private function getGroupMembers($group, $filters)
+	private function getGroupMembers($group)
 	{
 		// Get members from group
 		$members = $group->get('members');
@@ -328,7 +346,7 @@ class MemberCards extends Macro
 		}
 
 		// Limit members based on the filter
-		$members = array_slice($members, 0, $filters['limit']);
+		// $members = array_slice($members, 0, $filters['limit']);
 
 		// Return members
 		return $members;
