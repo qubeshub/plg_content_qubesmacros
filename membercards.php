@@ -322,9 +322,6 @@ class MemberCards extends Macro
 			$members = ($this->tags ? array_unique(array_merge($members, $members_with_ids)) : $members_with_ids);
 		}
 
-		// Limit members based on the filter
-		// $members = array_slice($members, 0, $filters['limit']);
-
 		// Return members
 		return $members;
 	}
