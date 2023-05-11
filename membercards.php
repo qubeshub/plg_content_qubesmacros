@@ -72,30 +72,7 @@ class MemberCards extends Macro
 		$this->tags = $this->getTags($args);
 		$this->base = rtrim(str_replace(PATH_ROOT, '', __DIR__));
 
-		// Array of filters
-		// $filters = array(
-		// 	'limit' => (count($args) == 1 && is_numeric($args[0])) ? $args[0] : 1000
-		// );
-
-		// print_r($this->args);
-		// echo '<br>';
-		// print_r($this->getArgs());
-		// echo '<br>';
-		// print_r($args);
-		// echo '<br>';
-		// echo count($this->getArgs());
-		// echo '<br>';
-		// echo count($args);
-		// echo '<br>';
-		// echo (is_numeric($this->args[0]));
-		// echo '<br>';
-		// echo var_dump($args);
-		// echo '<br>';
-		// print_r($filters);
-		// die;
-
 		// Get members
-		// $members = $this->getGroupMembers($this->group, $filters);
 		$members = $this->getGroupMembers($this->group);
 
 		// Are we a group member
