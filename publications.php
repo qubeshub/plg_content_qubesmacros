@@ -156,9 +156,9 @@ class Publications extends Macro
 				// echo \Route::url($pub->link()) . DS . 'watch' . DS . $pub->version->get('version_number') . '?confirm=1&action=subscribe<br>';
 				$html .= '    <span class="watch">';
 				if ($watching) {
-					$html .= '      <a href="' . \Route::url($pub->link()) . DS . 'watch' . DS . $pub->version->get('version_number') . '?confirm=1&action=unsubscribe"><i class="tooltips icon-watch watching" title="Click to unsubscribe from this publication\'s notifications" aria-hidden="true"></i></a>';
+					$html .= '      <a href="' . Route::url($pub->link('watch')) . '?confirm=1&action=unsubscribe"><i class="tooltips icon-watch watching" title="Click to unsubscribe from this publication\'s notifications" aria-hidden="true"></i></a>';
 				} else {
-					$html .= '      <a href="' . \Route::url($pub->link()) . DS . 'watch' . DS . $pub->version->get('version_number') . '?confirm=1&action=subscribe"><i class="tooltips icon-watch" title="Click to watch this publication and receive notifications when a new version is released" aria-hidden="true"></i></a>';
+					$html .= '      <a href="' . Route::url($pub->link('watch')) . '?confirm=1&action=subscribe"><i class="tooltips icon-watch" title="Click to watch this publication and receive notifications when a new version is released" aria-hidden="true"></i></a>';
 				}
 				$html .= '    </span>';
 
@@ -247,10 +247,14 @@ class Publications extends Macro
 	  		$html .= '        </div>';
 
 	  		// Tags
+			$url = Route::url(implode('&', array_filter(explode('&', $pub->link('version')), function($v) {
+				$param = explode('=', $v)[0];
+				return $param != 'id' && $param != 'v'; 
+			}))) . '/browse';
 	  		$html .= '        <div class="secondary-tags">';
 	  		foreach($pub->getTags() as $tag) {
 	  			if (!$tag->admin) {
-	  				$html .= '           <a href="' . $tag->link() . '"><span class="secondary-tag">' . $tag->raw_tag . '</span></a>';
+	  				$html .= '           <a href="' . $url . '?search=' . urlencode($tag->get('raw_tag')) . '"><span class="secondary-tag">' . $tag->raw_tag . '</span></a>';
 	  			}
 				}
 	  		$html .= '        </div>';
@@ -278,7 +282,10 @@ class Publications extends Macro
 				$downloads = number_format_short($downloads);
 
 
-	    	$html .= '    <a href="' . $pub->link('serve') . '?render=archive"><i class="downloads tooltips icon-download" title="Download" aria-hidden="true"></i></a><a href="' . $pub->link() . '/usage?v=' . $pub->version->version_number . '">' . $downloads . ' downloads</a>';
+			$url_base = $pub->link('version');
+			$url = Route::url($url_base . (!strpos($url_base, 'active=publications') ? '&active=usage' : '&tab_active=usage')) . '#usage-section';
+
+	    	$html .= '    <a href="' . $pub->link('serve') . '?render=archive"><i class="downloads tooltips icon-download" title="Download" aria-hidden="true"></i></a><a href="' . $url . '">' . $downloads . ' downloads</a>';
 
 	    	// Comments
 	    	// $html .= '    <a href="#"><i class="comments tooltips fa fa-comment-o" title="Comment" aria-hidden="true"></i></a><a href="#">0 comments</a>';
@@ -386,21 +393,22 @@ class Publications extends Macro
 				$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/download-alt.svg") . '</span>';
 				$html .= '      </a>';
 
-				$url = $pub->link() . '/forks/' . $pub->version->get('version_number') . '?action=fork';
-				$html .= '      <a aria-label="Adapt" title= "Adapt" href="' . $url . '" aria-hidden="true" tabindex="-1">';
+				$url = $pub->link('forks') . '&action=fork';
+				$html .= '      <a aria-label="Adapt" title= "Adapt" class="fork-this" href="' . $url . '" aria-hidden="true" tabindex="-1">';
 				$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/code-fork.svg") . '</span>';
 				$html .= '      </a>';
 
-				$url = Route::url($pub->link('version') . '&active=comments#commentform');
+				$url_base = $pub->link('version');
+				$url = Route::url($url_base . (!strpos($url_base, 'active=publications') ? '&active=comments' : '&tab_active=comments')) . '#commentform';
 				$html .= '      <a aria-label="Comment" title= "Comment" href="' . $url . '" aria-hidden="true" tabindex="-1">';
 				$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/comments.svg") . '</span>';
 				$html .= '      </a>';				
 				if ($watching) {
-					$html .= '      <a aria-label="Watch" title= "Click to unsubscribe from this resource\'s notifications" href="' . \Route::url($pub->link()) . DS . 'watch' . DS . $pub->version->get('version_number') . '?confirm=1&action=unsubscribe" aria-hidden="true" tabindex="-1">';
+					$html .= '      <a aria-label="Watch" title= "Click to unsubscribe from this resource\'s notifications" href="' . Route::url($pub->link('watch')) . '?confirm=1&action=unsubscribe" aria-hidden="true" tabindex="-1">';
 					$html .= '        <span class="menu-icon">' . file_get_contents("app/plugins/content/qubesmacros/assets/icons/feed-off.svg") . '</span>';
 					$html .= '      </a>';
 				} else {
-					$html .= '      <a aria-label="Watch" title= "Click to receive notifications when a new version is released" href="' . \Route::url($pub->link()) . DS . 'watch' . DS . $pub->version->get('version_number') . '?confirm=1&action=subscribe" aria-hidden="true" tabindex="-1">';
+					$html .= '      <a aria-label="Watch" title= "Click to receive notifications when a new version is released" href="' . Route::url($pub->link('watch')) . '?confirm=1&action=subscribe" aria-hidden="true" tabindex="-1">';
 					$html .= '        <span class="menu-icon">' . file_get_contents(PATH_ROOT . DS . "core/assets/icons/feed.svg") . '</span>';
 					$html .= '      </a>';
 				}
