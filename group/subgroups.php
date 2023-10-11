@@ -35,6 +35,7 @@ class Subgroups extends GroupMacro
         $txt['html'] .= '<p>Examples:</p>
 							<ul>
                                 <li><code>[[Group.Subgroups()]]</code> - Shows all subgroups.</li>
+								<li><code>[[Group.Subgroups(group=mysubgroup1;mysubgroup2)</code> - Shows all subgroups with group short names "mysubgroup1" and "mysubgroup2".</li>
 							</ul>';
         return $txt['html'];
     }
@@ -55,13 +56,19 @@ class Subgroups extends GroupMacro
 		// Get args
 		$args = $this->getArgs();
 
+		// Database
+		$this->_db = App::get('db');
+
+		// Get details (filters)
+		$this->subgroup = $this->_getGroup($args);
+
 		// Parse arguments
 		$this->base = rtrim(str_replace(PATH_ROOT, '', __DIR__));
 
 		// Get subgroups
 		$groups = $this->getSubgroups($this->group);
 		if (count($groups) == 0) {
-			$html = '<div>No subgroups found.</div>';
+			$html = '<div>No subgroups matching criteria found.</div>';
 		} else {
             $html = $this->renderSubgroups($groups);
         }
@@ -71,20 +78,28 @@ class Subgroups extends GroupMacro
 	}
 
 	/**
-	 * Get a list of events for a group
+	 * Get a list of subgroups of a group
 	 *
 	 * @param      object $group
 	 * @return     array
 	 */
 	private function getSubgroups($group)
 	{
-        $db =  \App::get('db');
+		$query = "SELECT child as gid FROM `#__xgroups_groups` as gg ";
+		
+		if ($this->subgroup) {
+			$query .= "INNER JOIN (SELECT gidNumber, cn FROM `#__xgroups`) G ON G.gidNumber = gg.child ";
+		}
+		
+		$query .= "WHERE gg.parent=" . $group->get('gidNumber');
 
-		$query = "SELECT child as gid FROM `#__xgroups_groups` as gg WHERE gg.parent=" . $group->get('gidNumber');
+		if ($this->subgroup) {
+			$query .= " AND G.cn IN (" . $this->subgroup . ")";
+		}
 
-		$db->setQuery($query);
+		$this->_db->setQuery($query);
 
-		$result = $db->loadColumn();
+		$result = $this->_db->loadColumn();
 
         # Use array_map to getInstance from Hubzero/User/Group from gid
         return array_map(function($gid) {
@@ -118,5 +133,26 @@ class Subgroups extends GroupMacro
         $html .= '</div>';
 
 		return $html;
+	}
+
+	/**
+	 * Get subgroup filters
+	 *
+	 * @param  	$args Macro Arguments
+	 * @return 	mixed
+	 */
+	private function _getGroup(&$args)
+	{
+		foreach ($args as $k => $arg)
+		{
+			if (preg_match('/group=([\w;]*)/', $arg, $matches))
+			{
+				$group = implode(',', array_map(array($this->_db, 'quote'), explode(';', (isset($matches[1])) ? $matches[1] : '')));
+				unset($args[$k]);
+				return $group;
+			}
+		}
+
+		return false;
 	}
 }
