@@ -106,38 +106,40 @@ class Carousel extends Macro
 		$final_slides = array();
 
 		//check each passed in slide
-		foreach ($images as $slide)
-		{
-			//check to see if image is external
-			if (strpos($slide, 'http') === false)
+		if ($images) {
+			foreach ($images as $slide)
 			{
-				$slide = trim($slide);
-
-				//check if internal file actually exists
-				if (is_file(PATH_APP . $base_url . DS . $slide))
+				//check to see if image is external
+				if (strpos($slide, 'http') === false)
 				{
-					$final_slides[] = 'app' . $base_url . DS . $slide;
-				} else {
-					//If a directory is taken as the input argument,it will get into the directory and render the images
-					$path =  'app' . $base_url . DS . $slide;
-					$imgpath = Filesystem::listContents($path, $filter = '.', $recursive = false, $full = false, $exclude = array('.svn', '.git', 'CVS', '.DS_Store', '__MACOSX'));
-					foreach($imgpath as $img) {
-						foreach($img as $key => $value) { 
-							if($key==='path'){
-								//Used to check if it's an image file
-								if(preg_match("/\.(bmp|gif|jpg|jpe|jpeg|png)$/i",$value)) {
-									$imgaddr = $path . $value;
-									$final_slides[] = $imgaddr;
+					$slide = trim($slide);
+
+					//check if internal file actually exists
+					if (is_file(PATH_APP . $base_url . DS . $slide))
+					{
+						$final_slides[] = 'app' . $base_url . DS . $slide;
+					} else {
+						//If a directory is taken as the input argument,it will get into the directory and render the images
+						$path =  'app' . $base_url . DS . $slide;
+						$imgpath = Filesystem::listContents($path, $filter = '.', $recursive = false, $full = false, $exclude = array('.svn', '.git', 'CVS', '.DS_Store', '__MACOSX'));
+						foreach($imgpath as $img) {
+							foreach($img as $key => $value) { 
+								if($key==='path'){
+									//Used to check if it's an image file
+									if(preg_match("/\.(bmp|gif|jpg|jpe|jpeg|png)$/i",$value)) {
+										$imgaddr = $path . $value;
+										$final_slides[] = $imgaddr;
+									}
 								}
 							}
 						}
 					}
-				}
-      		} else {
-				$headers = get_headers($slide);
-				if (strpos($headers[0], "OK") !== false)
-				{
-					$final_slides[] = $slide;
+				} else {
+					$headers = get_headers($slide);
+					if (strpos($headers[0], "OK") !== false)
+					{
+						$final_slides[] = $slide;
+					}
 				}
 			}
 		}
@@ -148,10 +150,14 @@ class Carousel extends Macro
 		$html  = '';
 		$html .= '<div class="wiki_slider' . ($align ? ' ' . $align : '') . ($float ? ' ' . $float : '') . '">';
 		$html .= '<div id="slider_' . $id . '", style="height: ' . $height . ';width:' . $width . '">';
-		foreach ($final_slides as $fs)
-		{
-			$html .= '<img src="' . $fs . '" alt="" />';
-		}
+		if ($final_slides) {
+			foreach ($final_slides as $fs)
+			{
+				$html .= '<img src="' . $fs . '" alt="" />';
+			}
+		} else {
+			$html .= '<p class="wiki_slider_error">Carousel Macro Error: No images found.</p>';
+		} 
 		$html .= '</div>';
 		$html .= '<div class="wiki_slider_pager" id="slider_' . $id . '_pager"></div>';
 		$html .= '</div>';
