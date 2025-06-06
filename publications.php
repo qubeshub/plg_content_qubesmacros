@@ -433,7 +433,7 @@ class Publications extends Macro
 
 				// Meta
 				$this->tags = $pub->getTags()->toArray();
-				$nonAdminTags = array_filter(array_map(function ($tag) {return (!$tag['admin'] ? $tag['raw_tag'] : NULL); }, $this->tags), 'strlen');
+				$nonAdminTags = array_filter(array_map(function ($tag) {return (!$tag['admin'] ? $tag['raw_tag'] : ''); }, $this->tags), 'strlen');
 				$tagsTitle = implode(', ', $nonAdminTags);
 				$html .= '    <div class="meta">';
 				$html .= '      <div aria-label="Tags" title= "' . $tagsTitle . '" class="tag-wrap">';
@@ -714,7 +714,7 @@ class Publications extends Macro
 			$html .= '   </div>';  // End resource-info-wrapper
 
 			$this->tags = $pub->getTags()->toArray();
-			$nonAdminTags = array_filter(array_map(function ($tag) {return (!$tag['admin'] ? $tag['raw_tag'] : NULL); }, $this->tags), 'strlen');
+			$nonAdminTags = array_filter(array_map(function ($tag) {return (!$tag['admin'] ? $tag['raw_tag'] : ''); }, $this->tags), 'strlen');
 			$tagsTitle = implode(', ', $nonAdminTags);
 
 			$html .= '      <div aria-label="Tags" title= "' . $tagsTitle . '" class="tags-wrapper">';
