@@ -782,7 +782,7 @@ class Publications extends Macro
 
 		if ($this->tags) {
 			$sql .= ' AND (V.id IN (SELECT objectid FROM (SELECT DISTINCT(objectid) FROM #__tags_object O WHERE O.tagid IN (SELECT T.id FROM #__tags T WHERE T.tag IN (' . implode(',', $this->tags) . ') OR T.raw_tag IN (' . implode(',', $this->tags) . ')) AND O.tbl="publications") as Z';
-			if (count($this->tags > 1)) {
+			if (is_array($this->tags) && count($this->tags) > 1) {
 				$sql .= ' WHERE ' . implode(' AND ', array_map(function($t) {return 'objectid IN (SELECT DISTINCT(objectid) FROM #__tags_object O WHERE O.tagid IN (SELECT T.id FROM #__tags T WHERE T.tag IN (' . $t . ') OR T.raw_tag IN (' . $t . ')) AND O.tbl="publications")';}, $this->tags));
 			}
 			$sql .= '))';
