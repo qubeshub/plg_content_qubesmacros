@@ -365,7 +365,7 @@ class MemberCards extends Macro
 				$html .=        '<div class="member-card-lower">';
 				
 				//Check if bio needs to be truncated
-				if (strlen($profile->get('bio')) > 75 || !empty($profile->get('tags')))
+				if (strlen($profile->get('bio', '')) > 75 || !empty($profile->get('tags')))
 				{
 				$html .=			'<button class="show-more icon-plus" aria-expanded="false">';
 				$html .=				'<span class=" not-visible">Extended ' . stripslashes($profile->get('name')) . '&#39;s bio</span></button>';
