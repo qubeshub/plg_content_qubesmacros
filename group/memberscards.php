@@ -262,7 +262,7 @@ class MembersCards extends GroupMacro
 				$html .=        '<div class="member-card-lower">';
 				
 				//Check if bio needs to be truncated
-				if (strlen($profile->get('bio')) > 75)
+				if (strlen($profile->get('bio', '')) > 75)
 				{
 				$html .=			'<button class="show-more icon-plus" aria-expanded="false">';
 				$html .=				'<span class=" not-visible">Extended ' . stripslashes($profile->get('name')) . '&#39;s bio</span></button>';
