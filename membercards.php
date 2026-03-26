@@ -40,6 +40,7 @@ class MemberCards extends Macro
 								<li><code>[[MemberCards(group=anothergroup)]]</code> - Shows all group members from "anothergroup" <strong>Note: Macro can only specify one group at a time.</strong></li>
                                 <li><code>[[MemberCards(role=role1;role2)]]</code> - Shows all members from the group with roles "role1" or "role2".</li>
                                 <li><code>[[MemberCards(id=2;1;3)</code> - Shows group members with ids 2, 1, and 3.</li>
+								<li><code>[[MemberCards(id_exclude=2;1;3)]]</code> - Shows group members excluding ids 2, 1, and 3.</li>
 								<li><code>[[MemberCards(tag=tag1;tag2)]]</code> - Shows group members with "tag1" OR "tag2" in their profiles</li>
 							</ul>';
         return $txt['html'];
@@ -68,6 +69,7 @@ class MemberCards extends Macro
 		// Parse arguments
 		$this->group = $this->getGroup($args);
 		$this->id = $this->getId($args);
+		$this->id_exclude = $this->getIdExclude($args);
 		$this->role = $this->getRole($args);
 		$this->tags = $this->getTags($args);
 		$this->base = rtrim(str_replace(PATH_ROOT, '', __DIR__));
@@ -145,7 +147,28 @@ class MemberCards extends Macro
 		return false;
     }
 
-    /**
+	/**
+	 * Get id exclude
+	 * 
+	 * @param  	$args Macro Arguments
+	 * @return 	mixed
+	 */
+	private function getIdExclude(&$args)
+	{
+		foreach ($args as $k => $arg)
+		{
+			if (preg_match('/id_exclude=([\w;]*)/', $arg, $matches))
+			{
+				$id_exclude = array_map('intval', explode(';', (isset($matches[1])) ? $matches[1] : ''));
+				unset($args[$k]);
+				return $id_exclude;
+			}
+		}
+
+		return false;
+    }
+
+	/**
 	 * Get role
 	 *
 	 * @param  	$args Macro Arguments
@@ -320,6 +343,11 @@ class MemberCards extends Macro
 			$members = ($this->role ? array_unique(array_merge($members, $members_with_ids)) : $members_with_ids);
 			// If tags specified too, need union, otherwise want subset - not sure if needed
 			$members = ($this->tags ? array_unique(array_merge($members, $members_with_ids)) : $members_with_ids);
+		}
+
+		// Exclude by id
+		if ($this->id_exclude) {
+			$members = array_diff($members, $this->id_exclude);
 		}
 
 		// Return members
