@@ -38,6 +38,7 @@ class MembersCards extends GroupMacro
                                 <li><code>[[Group.MembersCards()]]</code> - Shows all group members.</li>
                                 <li><code>[[Group.MembersCards(role=role1;role2)]]</code> - Shows all members from the group with roles "role1" or "role2".</li>
                                 <li><code>[[Group.MembersCards(id=2;1;3)</code> - Shows group members with ids 2, 1, and 3.</li>
+								<li><code>[[Group.MembersCards(id_exclude=2;1;3)]]</code> - Shows all group members except those with ids 2, 1, and 3.</li>
 							</ul>';
         return $txt['html'];
     }
@@ -60,6 +61,7 @@ class MembersCards extends GroupMacro
 
 		// Parse arguments
 		$this->id = $this->getId($args);
+		$this->id_exclude = $this->getIdExclude($args);
 		$this->role = $this->getRole($args);
 		$this->base = rtrim(str_replace(PATH_ROOT, '', __DIR__));
 
@@ -108,6 +110,27 @@ class MembersCards extends GroupMacro
 				$id = array_map('intval', explode(';', (isset($matches[1])) ? $matches[1] : ''));
 				unset($args[$k]);
 				return $id;
+			}
+		}
+
+		return false;
+    }
+
+	/**
+	 * Get id exclude
+	 * 
+	 * @param  	$args Macro Arguments
+	 * @return 	mixed
+	 */
+	private function getIdExclude(&$args)
+	{
+		foreach ($args as $k => $arg)
+		{
+			if (preg_match('/id_exclude=([\w;]*)/', $arg, $matches))
+			{
+				$id_exclude = array_map('intval', explode(';', (isset($matches[1])) ? $matches[1] : ''));
+				unset($args[$k]);
+				return $id_exclude;
 			}
 		}
 
@@ -214,6 +237,11 @@ class MembersCards extends GroupMacro
 			$members_with_ids = array_intersect($members, $this->id);
 			// If role specified too, need union, otherwise want subset
 			$members = ($this->role ? array_unique(array_merge($members, $members_with_ids)) : $members_with_ids);
+		}
+
+		// Exclude by id
+		if ($this->id_exclude) {
+			$members = array_diff($members, $this->id_exclude);
 		}
 
 		// Limit members based on the filter
